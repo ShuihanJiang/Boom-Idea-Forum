@@ -51,7 +51,8 @@ class CommentController extends Controller
      */
     public function show(Comment $comment)
     {
-        //
+        
+        
     }
 
     /**

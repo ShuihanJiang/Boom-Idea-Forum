@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class UpvoteController extends Controller
 {
+
+    /**
+     * Upvote the specified idea.
+     */
     public function upvoteIdea(Idea $idea)
     {
         $idea = Idea::find($idea->id);

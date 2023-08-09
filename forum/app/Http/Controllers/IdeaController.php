@@ -11,8 +11,9 @@ class IdeaController extends Controller
     /**
      * Display a listing of the resource.
      */
+    //view ideas, along with the corresponding counts of upvotes and comments
     public function index()
-    {
+    { 
         $ideas = Idea::withCount('upvotes', 'comments')->get();
         return response()->json($ideas,200);
     }
@@ -49,12 +50,14 @@ class IdeaController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified idea with comments.
      */
     public function show(Idea $idea)
     {
-        $idea = Idea::withCount('upvotes', 'comments')->find($idea->id);
+        $idea = Idea::with('comments')->find($idea->id);
         return response()->json($idea, 200);
+        // $idea = Idea::withCount('upvotes', 'comments')->find($idea->id);
+        // return response()->json($idea, 200);
     }
 
     /**

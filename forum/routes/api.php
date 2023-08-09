@@ -21,12 +21,16 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
+//a protected group of routes
 Route::middleware('auth:sanctum')->group(function () {
     // Ideas
     Route::apiResource('ideas', IdeaController::class)->except(['index']);
 
-    // Comments
-    Route::post('/ideas/{id}/comments', [CommentController::class, 'store']);
+    // Comments 
+    Route::post('/ideas/{id}/comments', [CommentController::class, 'store', 'destroy']);
+
+    // Upvotes
+    Route::post('/ideas/{id}/upvotes', [UpvoteController::class, 'upvoteIdea']);
 });
 
 Route::get('/ideas', [IdeaController::class, 'index']);
