@@ -18,7 +18,7 @@ class IdeaFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence(5),
-            'description' => $this->faker->paragraph(5),
+            'content' => $this->faker->paragraph(5),
             'user_id' => $this->faker->numberBetween(1, 10)
         ];
     }
