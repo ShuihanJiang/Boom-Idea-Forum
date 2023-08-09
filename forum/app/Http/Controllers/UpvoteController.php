@@ -2,64 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Idea;
 use App\Models\Upvote;
+
 use Illuminate\Http\Request;
 
 class UpvoteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function upvoteIdea(Idea $idea)
     {
-        //
-    }
+        $idea = Idea::find($idea->id);
+        $user = auth()->user();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        $existingUpvote = Upvote::where('user_id', $user->id)
+                                ->where('idea_id', $idea->id)
+                                ->first();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        if ($existingUpvote) {
+            return response()->json(['error' => 'You have already upvoted this idea.'], 400);
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Upvote $upvote)
-    {
-        //
-    }
+        $upvote = new Upvote();
+        $upvote->user_id = $user->id;
+        $upvote->idea_id = $idea->id;
+        $upvote->save();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Upvote $upvote)
-    {
-        //
-    }
+        $idea->upvotes++;
+        $idea->save();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Upvote $upvote)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Upvote $upvote)
-    {
-        //
+        return response()->json(['message' => 'Idea upvoted successfully']);
     }
 }

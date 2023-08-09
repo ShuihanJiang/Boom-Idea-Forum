@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Idea;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class IdeaController extends Controller
 {
@@ -12,7 +13,8 @@ class IdeaController extends Controller
      */
     public function index()
     {
-        //
+        $ideas = Idea::withCount('upvotes', 'comments')->get();
+        return response()->json($ideas,200);
     }
 
     /**
@@ -28,7 +30,22 @@ class IdeaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        $idea = Idea::create([
+            'title' => $request->input('title'),
+            'description' => $request->input('description'),
+            'user_id' => auth()->user()->id,
+        ]);
+
+        return response()->json($idea, 201);
     }
 
     /**
@@ -36,7 +53,8 @@ class IdeaController extends Controller
      */
     public function show(Idea $idea)
     {
-        //
+        $idea = Idea::withCount('upvotes', 'comments')->find($idea->id);
+        return response()->json($idea, 200);
     }
 
     /**
@@ -52,14 +70,35 @@ class IdeaController extends Controller
      */
     public function update(Request $request, Idea $idea)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        $idea = Idea::find($idea->id);
+        $idea->update([
+            'title' => $request->input('title'),
+            'description' => $request->input('description'),
+        ]);
+
+        return response()->json($idea,200);
     }
+    
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Idea $idea)
     {
-        //
+        $idea = Idea::find($idea->id);
+        $idea->delete();
+
+        return response()->json(['message' => 'Idea deleted successfully']);
     }
+
+    
 }
