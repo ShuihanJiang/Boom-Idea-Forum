@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Idea;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class IdeaController extends Controller
 {
@@ -12,12 +14,19 @@ class IdeaController extends Controller
      * Display a listing of the resource.
      */
     //view ideas, along with the corresponding counts of upvotes and comments
-    public function index()
-    { 
-        $ideas = Idea::withCount('upvotes', 'comments')->get();
-        return response()->json($ideas,200);
+    // public function index()
+    // { 
+    //     $ideas = Idea::withCount('upvotes', 'comments')->get();
+    //     return response()->json($ideas,200);
+    // }
+    public function index(User $user)
+    {
+        // if (Auth::id() !== $user->id) {
+        //     return response()->json(['error' => 'Unauthorized'], 403);
+        // }
+        // to get user's idea $user->ideas 
+        return response()->json($user->ideas);
     }
-
     /**
      * Show the form for creating a new resource.
      */

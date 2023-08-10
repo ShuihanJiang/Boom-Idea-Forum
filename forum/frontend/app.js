@@ -13,6 +13,11 @@ const app = Vue.createApp({
         email: '',
         password: ''
       },
+      registerForm: {
+        name: '',
+        email: '',
+        password: ''
+      },
       ideaForm: {
         title: '',
         content: ''
@@ -54,6 +59,27 @@ const app = Vue.createApp({
       }
       
     },
+
+    register: async function () {
+      try{
+        const response = await fetch(`${baseUrl}/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(this.registerForm)
+        })
+
+        const data = await response.json();
+        this.showRegister = false;
+
+      }catch(error){
+        console.log(error);
+      }
+
+    },
+
     getIdeas: async function () {
       try{
         if (this.user.id && this.token){
