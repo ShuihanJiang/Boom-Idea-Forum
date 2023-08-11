@@ -3,7 +3,7 @@ const baseUrl = 'http://127.0.0.1:8000'
 const app = Vue.createApp({
   data: function () {
     return {
-      title: 'Idea Forum',
+      title: 'Boom Idea Forum',
       token: '',
       user: {},
       ideas: [],
