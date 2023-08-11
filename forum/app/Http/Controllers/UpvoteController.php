@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Idea;
 use App\Models\Upvote;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UpvoteController extends Controller
 {
@@ -13,27 +15,21 @@ class UpvoteController extends Controller
     /**
      * Upvote the specified idea.
      */
-    public function upvoteIdea(Idea $idea)
-    {
-        $idea = Idea::find($idea->id);
-        $user = auth()->user();
+    // public function upvoteIdea(Idea $idea, User $user)
+    // {
+    //     if (Auth::id() !== $user->id) {
+    //         return response()->json(['error' => 'Unauthorized'], 403);
+    //     }
 
-        $existingUpvote = Upvote::where('user_id', $user->id)
-                                ->where('idea_id', $idea->id)
-                                ->first();
+    //     // Update the upvotes_count for the idea
+    //     $idea->upvotes_count++; // Increase the upvotes_count
+    //     $idea->save();
 
-        if ($existingUpvote) {
-            return response()->json(['error' => 'You have already upvoted this idea.'], 400);
-        }
+    //     return response()->json(['message' => 'Idea upvoted successfully', 'upvotes_count' => $idea->upvotes_count]);
+    // }
 
-        $upvote = new Upvote();
-        $upvote->user_id = $user->id;
-        $upvote->idea_id = $idea->id;
-        $upvote->save();
 
-        $idea->upvotes++;
-        $idea->save();
 
-        return response()->json(['message' => 'Idea upvoted successfully']);
-    }
+
+    
 }

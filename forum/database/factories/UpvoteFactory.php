@@ -2,14 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
-use App\Models\Idea;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Comment>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Upvote>
  */
-class CommentFactory extends Factory
+class UpvoteFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,9 +17,9 @@ class CommentFactory extends Factory
     public function definition(): array
     {
         return [
-            'content' => $this->faker->paragraph(3),
+            'upvotes_count' => $this->faker->numberBetween(1, 10),
+            'idea_id' => $this->faker->numberBetween(1, 20),
             'user_id' => $this->faker->numberBetween(1, 10),
-            'idea_id' => $this->faker->numberBetween(1, 20)
         ];
     }
 }

@@ -13,20 +13,18 @@ class IdeaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    //view ideas, along with the corresponding counts of upvotes and comments
-    // public function index()
-    // { 
-    //     $ideas = Idea::withCount('upvotes', 'comments')->get();
-    //     return response()->json($ideas,200);
-    // }
-    public function index(User $user)
+
+     public function index(User $user)
     {
-        // if (Auth::id() !== $user->id) {
-        //     return response()->json(['error' => 'Unauthorized'], 403);
-        // }
-        // to get user's idea $user->ideas 
-        return response()->json($user->ideas);
+        if (Auth::id() !== $user->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $ideas = Idea::with('user', 'comments.user','upvotes.user')->get();
+
+        return response()->json($ideas, 200);
     }
+
+
     /**
      * Show the form for creating a new resource.
      */
@@ -38,25 +36,19 @@ class IdeaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, User $user)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
+        if (Auth::id() !== $user->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
         }
-
-        $idea = Idea::create([
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-            'user_id' => auth()->user()->id,
-        ]);
-
+        $idea = new idea;
+        $idea->title = $request->input('title');
+        $idea->content = $request->input('content');
+        $idea->user_id = Auth::id();
+        $idea->save();
         return response()->json($idea, 201);
     }
+
 
     /**
      * Display the specified idea with comments.
@@ -80,32 +72,28 @@ class IdeaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Idea $idea)
-    {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-        ]);
+    public function update(Request $request, User $user, Idea $idea)
+        {
+            if (Auth::id() !== $idea->user_id) {
+                return response()->json(['error' => 'unauthorized'], 403);
+            }
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
+            $idea->title = $request->input('title');
+            $idea->content = $request->input('content');
+            $idea->save();
+
+            return response()->json($idea,200);
         }
-
-        $idea = Idea::find($idea->id);
-        $idea->update([
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-        ]);
-
-        return response()->json($idea,200);
-    }
     
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Idea $idea)
+    public function destroy(User $user,Idea $idea)
     {
+        if (Auth::id() !== $user->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
         $idea = Idea::find($idea->id);
         $idea->delete();
 
@@ -114,3 +102,5 @@ class IdeaController extends Controller
 
     
 }
+
+

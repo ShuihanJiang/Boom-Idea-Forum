@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('upvotes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->integer('upvotes_count');
             $table->unsignedBigInteger('idea_id');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
-            $table->unique(['user_id', 'idea_id']);
             
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('idea_id')->references('id')->on('ideas')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

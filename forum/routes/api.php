@@ -21,21 +21,16 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// //a protected group of routes
-// Route::middleware('auth:sanctum')->group(function () {
-//     // Ideas
-//     Route::apiResource('ideas', IdeaController::class)->except(['index']);
-
-//     // Comments 
-//     Route::post('/ideas/{id}/comments', [CommentController::class, 'store', 'destroy']);
-
-//     // Upvotes
-//     Route::post('/ideas/{id}/upvotes', [UpvoteController::class, 'upvoteIdea']);
-// });
-
-// Route::get('/ideas', [IdeaController::class, 'index']);
 Route::middleware(['auth:sanctum'])->group(function () {
-    // any route in here is protected
-    // Route::apiResource('users.ideas', IdeaController::class);
+    // Ideas
+    Route::apiResource('users.ideas', IdeaController::class);
+
+    // Comments 
+    Route::apiResource('users.comments', CommentController::class);
+
+    // // Upvotes
+    Route::apiResource('users.upvotes', UpvoteController::class);
 });
-Route::apiResource('users.ideas', IdeaController::class);
+
+
+

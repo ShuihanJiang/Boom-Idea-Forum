@@ -22,8 +22,9 @@ class Idea extends Model
         return $this->belongsTo(User::class);
     }
 
-    // public function upvotes()
-    // {
-    //     return $this->hasMany(Upvote::class);
-    // }
+    public function upvotes()
+    {
+        return $this->belongsTo(Upvote::class);
+    }
+    
 }
